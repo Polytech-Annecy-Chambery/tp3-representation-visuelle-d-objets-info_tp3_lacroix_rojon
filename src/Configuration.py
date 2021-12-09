@@ -33,6 +33,7 @@ class Configuration:
             self.parameters['zAxisColor'] = [0, 0, 1] 
         if 'screenPosition' not in self.parameters:
             self.parameters['screenPosition'] = -10
+            
                     
         # Initializes PyGame
         self.initializePyGame()
@@ -42,12 +43,22 @@ class Configuration:
 
         # Initializes the tranformation matrix
         self.initializeTransformationMatrix()
+        gl.glRotatef(-90, 1, 0, 0)
              
         # Initializes the object list
         self.objects = []    
             
         # Generates coordinates
-        self.generateCoordinates()     
+        self.generateCoordinates()
+        
+        
+    #rajout    
+    Configuration({'screenPosition': -5, 'xAxisColor': [1, 1, 0]}).display()
+    
+    Configuration({'screenPosition': -5, 'xAxisColor': [1, 1, 0]}). \
+    setParameter('xAxisColor', [1, 1, 0]). \
+    setParameter('yAxisCo lor', [0,1,1]). \
+    display()
         
     # Initializes Pygame
     def initializePyGame(self):
