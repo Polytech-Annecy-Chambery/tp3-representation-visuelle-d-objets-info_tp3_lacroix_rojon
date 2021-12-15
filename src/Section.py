@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu Nov 16 19:47:50 2017
-
 @author: lfoul
 """
 import OpenGL.GL as gl
@@ -52,30 +51,97 @@ class Section:
 
     # Defines the vertices and faces 
     def generate(self):
-        self.vertices = [ 
-                # Définir ici les sommets
+        self.vertices = [
+                [0, 0, 0 ], 
+                [0, 0, self.parameters['height']], 
+                [self.parameters['width'], 0, self.parameters['height']],
+                [self.parameters['width'], 0, 0],      
+				[self.parameters['width'], self.parameters['thickness'], 0],
+                [self.parameters['width'], self.parameters['thickness'], self.parameters['height']],
+                [0, self.parameters['thickness'], self.parameters['height']],
+                [0, self.parameters['thickness'], 0]
                 ]
+                
         self.faces = [
-                # définir ici les faces
-                ]   
+                [0, 3, 2, 1],
+                [1, 2, 5, 6],
+                [6, 5, 4, 7],
+                [7, 4, 3, 0],
+                [0, 7, 6, 1],
+                [2, 3, 4, 5]
+                ]     
 
     # Checks if the opening can be created for the object x
     def canCreateOpening(self, x):
-        # A compléter en remplaçant pass par votre code
-        pass      
+        # A compléter en remplaçant pass par votre code      
+        if x.parameters['width']+x.parameters['position'][0] <= self.parameters['position'][0] + self.parameters['width']:
+            if x.parameters['height'] + x.parameters['position'][2] <= self.parameters['position'][2] + self.parameters['height']:
+                return True 
+        return False
+    
         
     # Creates the new sections for the object x
     def createNewSections(self, x):
         # A compléter en remplaçant pass par votre code
-        pass              
+        if self.canCreateOpening(x):
+            L = []
+            h_0 = self.parameters['height']
+            w_1 = self.parameters['width'] - x.parameters['position'][0]            
+            x_2 = x.parameters['position'][0]
+            z_2 = x.parameters['position'][2] + x.parameters['height']
+            w_2 = x.parameters['width']
+            h_2 = self.parameters['height'] - z_2
+            x_3 = x_2
+            w_3 = w_2
+            h_3 = x.parameters['position'][2] 
+            x_4 = x.parameters['width'] + x.parameters['position'][0]
+            w_4 = self.parameters['width'] - x.parameters['position'][0] - x.parameters['width']
+            if w_1 != 0:
+                section1 = Section({'position' : [0, 0, 0], 'width' : w_1, 'height' : h_0})
+                L.append(section1)
+            if h_2 != 0 :
+                section2 = Section({'position' : [x_2, 0, z_2], 'width' : w_2, 'height' : h_2})
+                L.append(section2)
+            if h_3 != 0 :
+                section3 = Section({'position' : [x_3, 0, 0], 'width' : w_3, 'height' : h_3})
+                L.append(section3)
+            if w_4 != 0 :
+                section4 = Section({'position' : [x_4, 0, 0], 'width' : w_4, 'height' : h_0})
+                L.append(section4)
+            return L
+            
         
     # Draws the edges
     def drawEdges(self):
         # A compléter en remplaçant pass par votre code
-        pass           
+        gl.glPushMatrix()    
+        gl.glTranslatef(self.parameters['position'][1], self.parameters['position'][0], self.parameters['position'][2])
+        
+        gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE) # on trace les lignes : GL_LINE
+        
+        for i in self.faces :
+            gl.glBegin(gl.GL_QUADS)
+            gl.glColor3fv([0.1, 0.1, 0.1])
+            for j in i:
+                gl.glVertex3fv(self.vertices[j])
+            gl.glEnd()
+
+        gl.glPopMatrix()           
                     
     # Draws the faces
     def draw(self):
         # A compléter en remplaçant pass par votre code
-        pass
-  
+        self.drawEdges()
+        gl.glPushMatrix()    
+        gl.glTranslatef(self.parameters['position'][1], self.parameters['position'][0], self.parameters['position'][2])
+        
+        gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_FILL) # on trace les faces : GL_FILL
+        
+        for i in self.faces :
+            gl.glBegin(gl.GL_QUADS)
+            gl.glColor3fv([0.5, 0.5, 0.5])
+            for j in i:
+                gl.glVertex3fv(self.vertices[j])
+            gl.glEnd()
+
+        gl.glPopMatrix()
