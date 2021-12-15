@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu Nov 16 19:47:50 2017
-
 @author: lfoul
 """
 import OpenGL.GL as gl
@@ -64,10 +63,17 @@ class Wall:
     # Adds an object    
     def add(self, x):    
         # A compléter en remplaçant pass par votre code
-        pass        
+        self.objects.append(x)
+        return self        
                     
     # Draws the faces
     def draw(self):
         # A compléter en remplaçant pass par votre code
-        pass
-  
+        gl.glPushMatrix()
+        gl.glRotatef(self.parameters['orientation'], 0, 0, 1)
+        gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_FILL)
+        
+        for x in self.objects:
+            x.draw()
+        
+        gl.glPopMatrix()
